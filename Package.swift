@@ -16,14 +16,15 @@ let package = Package(
     ],
     dependencies: [
         // Dependencies declare other packages that this package depends on.
-        .package(url: "https://github.com/SnapKit/SnapKit.git", .upToNextMajor(from: "5.0.1"))
+        .package(url: "https://github.com/SnapKit/SnapKit.git", .upToNextMajor(from: "5.0.1")),
+        .package(url: "https://github.com/scenee/FloatingPanel.git", .upToNextMajor(from: "2.8.0"))
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
         // Targets can depend on other targets in this package and products from dependencies.
         .target(
             name: "NCComponentLibrary",
-            dependencies: ["SnapKit"],
+            dependencies: ["SnapKit", "FloatingPanel"],
             path: "Sources"),
         .testTarget(
             name: "NCComponentLibraryTests",

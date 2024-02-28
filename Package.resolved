@@ -1,6 +1,15 @@
 {
   "pins" : [
     {
+      "identity" : "floatingpanel",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/scenee/FloatingPanel",
+      "state" : {
+        "revision" : "8f2be39bf49b4d5e22bbf7bdde69d5b76d0ecd2a",
+        "version" : "2.8.2"
+      }
+    },
+    {
       "identity" : "snapkit",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/SnapKit/SnapKit.git",

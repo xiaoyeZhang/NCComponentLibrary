@@ -174,7 +174,7 @@ public class NCScrollMenu: UIView {
             var strWidth:Int = labelStrWidth
             if isBisect {
                 let meunListCount = maxNumView == 0 ? meunList.count : maxNumView
-                strWidth = Int(currentDeviceType() == "iPad" ? kScreen_width * 0.45 : kScreen_width) / meunListCount
+                strWidth = Int(UIDevice.currentDeviceType() == "iPad" ? kScreen_width * 0.45 : kScreen_width) / meunListCount
                 beforeStrWidth += strWidth
                 beforeLeft.append(["left": beforeStrWidth - strWidth, "width": strWidth])
             } else {
@@ -294,7 +294,8 @@ public class NCScrollMenu: UIView {
             var strWidth:Int = labelStrWidth
             if isBisect {
                 let meunListCount = maxNumView == 0 ? meunList.count : maxNumView
-                strWidth = Int(currentDeviceType() == "iPad" ? kScreen_width * 0.45 : kScreen_width) / meunListCount
+//                strWidth = Int(UIDevice.currentDeviceType() == "iPad" ? kScreen_width * 0.45 : kScreen_width) / meunListCount
+                strWidth = Int(kScreen_width) / meunListCount
                 beforeStrWidth += strWidth
                 beforeLeft.append(["left": beforeStrWidth - strWidth, "width": strWidth])
             } else {
@@ -427,10 +428,6 @@ public class NCScrollMenu: UIView {
         let strSize = statusLabelText.boundingRect(with: size, options: .usesLineFragmentOrigin, attributes: (dic as! [NSAttributedString.Key : Any]) , context: nil).size
         
         return strSize.width
-    }
-    
-    func currentDeviceType() -> String {
-        return UIDevice.current.model
     }
     
 }
