@@ -69,6 +69,23 @@ public class NCScrollMenu: UIView {
             changeTextFont()
         }
     }
+    
+    open var leftMargin: CGFloat = 0.0 {// 左边距
+        didSet{
+            menuScrollview.snp.updateConstraints() { (make) in
+                make.left.equalTo(self).offset(leftMargin)
+            }
+        }
+    }
+    
+    open var rightMargin: CGFloat = 0.0 {// 右边距
+        didSet{
+            menuScrollview.snp.updateConstraints() { (make) in
+                make.right.equalTo(self).offset(-rightMargin)
+            }
+        }
+    }
+    
     open var maxNumView: Int = 4 // 一屏最多显示几个视图 默认4个 为0时不起作用 此属性只有在 isBisect为true时 有效 //
     open var isBisect:Bool = false // 是否平分
     open var isChangeBtnItemColor:Bool = false // 是否改变按钮文字颜色
@@ -82,6 +99,8 @@ public class NCScrollMenu: UIView {
     var arr: Array<UIView> = []
     var beforeLeft: Array<Any> = [] // 按钮的初始位置
     var menuScrollview = UIScrollView()
+    
+    var selectViewTag: Int = 0 // 当前选中的菜单
     
     public weak var delegate : NCScrollMenuDelegate?
     
@@ -333,7 +352,12 @@ public class NCScrollMenu: UIView {
         }
     }
     
+    public func changeColor() {
+        isLineShow(tag: selectViewTag)
+    }
+    
     public func isLineShow(tag: Int) {
+        selectViewTag = tag
         if meunStyle == .onlyText {
             for tagitemView in arr {
                 
