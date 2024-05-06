@@ -16,6 +16,7 @@ public class meunList: NSObject {
     
     open var titleStr = ""
     open var butTag: Int = 0
+    open var count: Int = 0
     open var icon = ""
 }
 
@@ -32,6 +33,12 @@ public class NCScrollMenu: UIView {
             setMenuView()
         }
     }
+    open var meunCounts: [Int] = [] {
+        didSet {
+            changeTextCount()
+        }
+    }
+    
     open var meunStyle: NCMeunMode = .onlyText { ///< 选择样式 默认 onlyText
         didSet {
             if meunStyle != .onlyText  {
@@ -53,7 +60,11 @@ public class NCScrollMenu: UIView {
     open var textHeadDisView: UIColor = UIColor(red: 0.13, green: 0.13, blue: 0.13, alpha: 1.0)
     // 自定义选中颜色
     open var brandElement: UIColor = UIColor(red: 0.03, green: 0.46, blue: 0.98, alpha: 1.0)
-
+    // 类别数字背景颜色
+    open var textCountBg: UIColor = UIColor(red: 0.92, green: 0.32, blue: 0.27, alpha: 1.0)
+    // 类别数字文字颜色
+    open var textCountColor: UIColor = .white
+    
     var isAddBtn:Bool = false
     open var isClearColor:Bool = false {// 背景是否透明
         didSet {
@@ -65,6 +76,12 @@ public class NCScrollMenu: UIView {
         }
     }
     open var titleFont: CGFloat = 15 {// 文字的字体大小
+        didSet{
+            changeTextFont()
+        }
+    }
+    
+    open var titleCountFont: CGFloat = 11 {// 文字的字体大小
         didSet{
             changeTextFont()
         }
@@ -97,6 +114,7 @@ public class NCScrollMenu: UIView {
     let lineBg = UILabel()
     
     var arr: Array<UIView> = []
+    var countArr: Array<UIView> = []
     var beforeLeft: Array<Any> = [] // 按钮的初始位置
     var menuScrollview = UIScrollView()
     
@@ -175,19 +193,47 @@ public class NCScrollMenu: UIView {
         for meunItem in meunList {
             
             isAddBtn = true
+            let btnView = UIView()
+            btnView.tag = meunItem.butTag
+            btnView.isUserInteractionEnabled = true
+            let tap = UITapGestureRecognizer(target: self, action: #selector(tapViewBtn))
+            tap.numberOfTapsRequired = 1
+            btnView.addGestureRecognizer(tap)
+                        
             let btnItem = UILabel()
-            
             btnItem.tag = meunItem.butTag
             btnItem.text = meunItem.titleStr
             btnItem.isUserInteractionEnabled = true
             btnItem.textAlignment = .center
             btnItem.font = UIFont.systemFont(ofSize: titleFont)
             btnItem.backgroundColor = UIColor.clear
-            let tap = UITapGestureRecognizer(target: self, action: #selector(tapViewBtn))
-            tap.numberOfTapsRequired = 1
-            btnItem.addGestureRecognizer(tap)
             
-            menuScrollview.addSubview(btnItem)
+            btnView.addSubview(btnItem)
+
+            btnItem.snp.makeConstraints { make in
+                make.center.equalTo(btnView)
+                make.top.bottom.equalTo(btnView)
+            }
+            
+            let countItem = UILabel()
+            countItem.isHidden = true
+            countItem.layer.cornerRadius = 8.0
+            countItem.layer.masksToBounds = true
+            countItem.textAlignment = .center
+            countItem.font = UIFont.systemFont(ofSize: titleCountFont)
+            countItem.textColor = textCountColor
+            countItem.backgroundColor = textCountBg
+            btnView.addSubview(countItem)
+            let labelWidth:Int = Int(getLabWidth(labelStr: String(meunItem.count), font: countItem.font, height: 16))
+            countItem.snp.makeConstraints { make in
+                make.centerY.equalTo(btnItem)
+                make.left.equalTo(btnItem.snp.right).offset(8)
+                make.height.greaterThanOrEqualTo(16)
+                make.width.equalTo(labelWidth + 15)
+            }
+            countArr.append(countItem)
+            
+            menuScrollview.addSubview(btnView)
             
             let labelStrWidth:Int = Int(getLabWidth(labelStr: meunItem.titleStr, font: btnItem.font, height: 50))
             var strWidth:Int = labelStrWidth
@@ -201,7 +247,7 @@ public class NCScrollMenu: UIView {
                 beforeLeft.append(["left":beforeStrWidth - (strWidth + 25),"width": strWidth + 25])
             }
             
-            btnItem.snp.makeConstraints { (make) in
+            btnView.snp.makeConstraints { (make) in
                 // 宽高设置为100
                 if isBisect {
                     make.width.equalTo(strWidth)
@@ -348,6 +394,30 @@ public class NCScrollMenu: UIView {
             for tagitemView in arr {
                 let btnItem:UILabel = tagitemView as! UILabel
                 btnItem.font = UIFont.systemFont(ofSize: titleFont)
+            }
+            
+            for tagitemView in countArr {
+                let btnItem:UILabel = tagitemView as! UILabel
+                btnItem.font = UIFont.systemFont(ofSize: titleCountFont)
+            }
+        }
+    }
+
+    func changeTextCount() {
+        if meunStyle == .onlyText {
+            for (index, tagitemView) in countArr.enumerated() {
+                let btnItem:UILabel = tagitemView as! UILabel
+                btnItem.isHidden = true
+                if meunCounts[index] > 0 {
+                    btnItem.isHidden = false
+                    btnItem.text = String(meunCounts[index])
+                    btnItem.layoutIfNeeded()
+                    btnItem.layer.cornerRadius = btnItem.frame.size.height / 2.0
+                    let labelWidth:Int = Int(getLabWidth(labelStr: String(meunCounts[index]), font: btnItem.font, height: btnItem.frame.size.height))
+                    btnItem.snp.updateConstraints { make in
+                        make.width.equalTo(labelWidth + 15)
+                    }
+                }
             }
         }
     }

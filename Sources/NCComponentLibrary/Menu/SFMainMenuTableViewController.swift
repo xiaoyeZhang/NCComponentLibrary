@@ -81,6 +81,10 @@ public class SFMainMenuTableViewController: UITableViewController {
             cell!.selectionStyle = .none
         }
 
+        if action.titleFont != nil {
+            cell!.actionNameLabel.font = action.titleFont
+        }
+        
         if (action.isOn) {
             cell!.actionIconImage.image = action.onIcon
             cell!.actionNameLabel.text = action.onTitle
