@@ -114,6 +114,7 @@ public class NCScrollMenu: UIView {
     let lineBg = UILabel()
     
     var arr: Array<UIView> = []
+    var btnViewArr: Array<UIView> = []
     var countArr: Array<UIView> = []
     var beforeLeft: Array<Any> = [] // 按钮的初始位置
     var menuScrollview = UIScrollView()
@@ -148,7 +149,6 @@ public class NCScrollMenu: UIView {
     }
     
     public func setMenuView() {
-        
         if meunStyle == .iconAndText {
             isAddBtn = false
             addIconAndTextView()
@@ -157,7 +157,7 @@ public class NCScrollMenu: UIView {
         }
     }
     
-    func addTextBtnView() {
+    private func addTextBtnView() {
         
         self.backgroundColor = baseViewColor
         
@@ -199,7 +199,7 @@ public class NCScrollMenu: UIView {
             let tap = UITapGestureRecognizer(target: self, action: #selector(tapViewBtn))
             tap.numberOfTapsRequired = 1
             btnView.addGestureRecognizer(tap)
-                        
+            
             let btnItem = UILabel()
             btnItem.tag = meunItem.butTag
             btnItem.text = meunItem.titleStr
@@ -291,6 +291,7 @@ public class NCScrollMenu: UIView {
                 }
             }
             arr.append(btnItem)
+            btnViewArr.append(btnView)
         }
         
         menuScrollview.contentSize = CGSize(width: CGFloat(beforeStrWidth), height: self.frame.size.height)
@@ -298,7 +299,7 @@ public class NCScrollMenu: UIView {
         menuScrollview.showsHorizontalScrollIndicator = false
     }
     
-    func addIconAndTextView() {
+    private func addIconAndTextView() {
         
         self.backgroundColor = baseViewColor
         
@@ -403,7 +404,28 @@ public class NCScrollMenu: UIView {
         }
     }
 
-    func changeTextCount() {
+    public func changeTextUI() {
+        isAddBtn = false
+        
+        for view in arr {
+            view.removeFromSuperview()
+        }
+        arr.removeAll()
+        
+        for view in btnViewArr {
+            view.removeFromSuperview()
+        }
+        btnViewArr.removeAll()
+        
+        for view in countArr {
+            view.removeFromSuperview()
+        }
+        countArr.removeAll()
+        
+        setMenuView()
+    }
+    
+    private func changeTextCount() {
         if meunStyle == .onlyText {
             for (index, tagitemView) in countArr.enumerated() {
                 let btnItem:UILabel = tagitemView as! UILabel
